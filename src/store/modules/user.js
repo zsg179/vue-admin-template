@@ -33,16 +33,15 @@ const actions = {
     const { adminName, adminPassword } = userInfo
     return new Promise((resolve, reject) => {
       login({ adminName: adminName.trim(), adminPassword: adminPassword }).then(response => {
-        if(response.status == 200){
-          const tokenV = response.data.token.tokenValue
+        if(response.data.code != 200){
+          //登录失败
+          reject(response.data.msg)
+        }
+        // 设置 token，作为用户已登陆的前端标识，存在 cookie 中
+          const tokenV = response.data.data;
           commit('SET_TOKEN', tokenV)
           setToken(tokenV)
           resolve()
-        }
-        //const { data } = response
-        //commit('SET_TOKEN', data.token)
-        //setToken(data.token)
-        //resolve()
       }).catch(error => {
         reject(error)
       })
@@ -53,16 +52,15 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        const { data } = response
+        //const { data } = response
+        const data = response.data.data
 
-        if (!data) {
+        if (!response.data) {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_NAME', data)
+        commit('SET_AVATAR', data)
         resolve(data)
       }).catch(error => {
         reject(error)

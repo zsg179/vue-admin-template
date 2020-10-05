@@ -26,7 +26,7 @@ export function fetchPv(pv) {
 
 export function createArticle(data) {
   return request({
-    url: '/article/create',
+    url: '/article/create/',
     method: 'post',
     data
   })
